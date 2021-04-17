@@ -14,9 +14,10 @@ The CaseStudy2 dataset provdided by DDSAnalytics contain information about 870 e
 Kebur Fantahun's YouTube Presentation: https://www.youtube.com/watch?v=CJnrZHncjWc
 
 ## Folder & File Information
-- `/Data` contains the summary of the CaseStudy2 analysis and data
-- `/Html` contains the knit Html Report for our Analysis
-- `/Presentation` contains our powerpoint slide deck
+- `/Data` contains the summary of the Case Study 2 analysis and data
+- `/Html` contains the knit Html Report for the Analysis
+- `/Prediction` contains the prediction csv file
+- `/Presentation` contains the powerpoint slide deck
 - `/src` contains our R-Markdown (RMD) source code
 
 ## Instructions to the run the code locally

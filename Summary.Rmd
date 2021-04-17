@@ -10,12 +10,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## This markdown document contains work for MSDS6306, Spring 2021
-
-## Global Notes:
-### Executive Summary
-### Introduction to the Project
+### Summary
+This report will illustrate which employee attributes lead to attrition. The report also provides summary statistics such as minimums, medians and maximums. The researcher divulges information that DDSAnalytics can leverage to ensure high rates of attrition for themselves and for Fortune 100 companies.
 ### Supporting code can be found below in the RMD
 ### Slides can be found in the Presentation directory
+### The youtube presentation can be found here: Youtube Link
 
 ######################################################################################################################################################
 
