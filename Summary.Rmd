@@ -1,0 +1,67 @@
+---
+title: "Project 2 - DDS"
+author: "Kebur Fantahun"
+date: "04/17/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## This markdown document contains work for MSDS6306, Spring 2021
+
+## Global Notes:
+### Executive Summary
+### Introduction to the Project
+### Supporting code can be found below in the RMD
+### Slides can be found in the Presentation directory
+
+######################################################################################################################################################
+
+```{r}
+#Libraries
+#Try to add libraries up here to avoid clutter and to better manage libraries
+library(tidyverse)
+
+```
+
+```{r}
+# Loading our data
+emplDat <- read_csv("CaseStudy2-data.csv")
+
+head(emplDat,10)
+str(emplDat)
+
+# Data Cleaning
+
+```
+
+```{r}
+#
+
+```
+
+```{r}
+#
+
+```
+
+```{r}
+#
+
+```
+
+```{r}
+#
+
+```
+
+```{r}
+#
+
+```
+
+
+
+
