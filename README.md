@@ -13,7 +13,7 @@ The CaseStudy2 dataset provdided by DDSAnalytics contain information about 870 e
 - Excel file of employee attributes that will be used to predict attrition.
 
 ## Presentations
-Kebur Fantahun's YouTube Presentation: https://youtu.be/50EopOELm6w
+Kebur Fantahun's YouTube Presentation: https://youtu.be/aJzSfHmRfDY
 
 ## Folder & File Information
 - `/Data` contains the summary of the Case Study 2 data
