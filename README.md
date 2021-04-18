@@ -7,7 +7,7 @@ This report will illustrate which employee attributes lead to attrition. The rep
 ## Dataset
 The CaseStudy2 dataset provdided by DDSAnalytics contain information about 870 employees and attributes related to their jobs. The dataset description is as follows.
 
-**CastStudy2-data.csv**
+**CaseStudy2-data.csv**
 - Excel file of employee attributes that will be used to predict attrition.
 
 ## Presentations
@@ -16,8 +16,9 @@ Kebur Fantahun's YouTube Presentation: https://www.youtube.com/watch?v=CJnrZHncj
 ## Folder & File Information
 - `/Data` contains the summary of the Case Study 2 analysis and data
 - `/Html` contains the knit Html Report for the Analysis
-- `/Prediction` contains the prediction csv file
+- `/Prediction` contains the csv file that has predictions for Attrition; CaseStudy2Predictions_Fantahun_Attrition.csv
 - `/Presentation` contains the powerpoint slide deck
+- `/Regression` contains the csv file that has the regression for Salary; CaseStudy2Regression_Fantahun_Salary.csv
 - `/src` contains our R-Markdown (RMD) source code
 
 ## Instructions to the run the code locally

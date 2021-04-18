@@ -10,55 +10,320 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## This markdown document contains work for MSDS6306, Spring 2021
+
 ### Summary
-This report will illustrate which employee attributes lead to attrition. The report also provides summary statistics such as minimums, medians and maximums. The researcher divulges information that DDSAnalytics can leverage to ensure high rates of attrition for themselves and for Fortune 100 companies.
+Understanding employee attrition is important to entities like Fortune 100 companies for calculating how much time and energy should be distributed between several levels of employees. This report will illustrate which employee attributes lead to attrition. The report also provides summary statistics such as minimums, medians and maximums. The researcher divulges information that DDSAnalytics can leverage to ensure high rates of attrition for themselves and for Fortune 100 companies.
+
 ### Supporting code can be found below in the RMD
+
 ### Slides can be found in the Presentation directory
+
 ### The youtube presentation can be found here: Youtube Link
 
 ######################################################################################################################################################
 
 ```{r}
 #Libraries
-#Try to add libraries up here to avoid clutter and to better manage libraries
 library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(Amelia)
+library(DT)
+library(reshape2) #melt function
+# Models
+library(tidymodels)
+library(tune)
+library(workflows)
 
+# split data and run analysis models
+#install.packages("caTools")
+library(caTools)
+#install.packages("caret")
+library(caret)
+#install.packages("e1071")
+library(e1071)
+
+# ROC curve and plotting
+#install.packages("rpart.plot")
+#install.packages("ROCR")
+library(rpart.plot)
+library(ROCR)
 ```
 
 ```{r}
 # Loading our data
 emplDat <- read_csv("CaseStudy2-data.csv")
+```
 
-head(emplDat,10)
-str(emplDat)
+```{r}
+#head(emplDat,10)
+#str(emplDat)
 
 # Data Cleaning
 
+# check for NA and... no NA!
+which(is.na(emplDat))
+#missmap(emplDat)
+# check the data
+summary(emplDat)
+# We see that the dataset is 870 x 36. The variable age indicates that no information about young children(17-) or very elderly persons are included. We see that there are many non-numeric variables. We can also see that Attrition has a high number of no compared to yes in regards to leaving where they work. MonthlyIncome takes a wide range of values from $1,081 to $19,999 - the difference in the median and mean indicates that there may be some outliers in the MonthlyIncome statistic.
 ```
 
 ```{r}
-#
+# change character columns into factor to save memory
+# also multiple numeric variables are actually factors, convert these to factors.
+emplDat$Attrition <- sapply(emplDat$Attrition,factor)
+emplDat$BusinessTravel <- sapply(emplDat$BusinessTravel,factor)
+emplDat$Department <- sapply(emplDat$Department,factor)
+emplDat$EducationField <- sapply(emplDat$EducationField ,factor)
+emplDat$Gender <- sapply(emplDat$Gender,factor)
+emplDat$JobRole <- sapply(emplDat$JobRole,factor)
+emplDat$MaritalStatus <- sapply(emplDat$MaritalStatus,factor)
+emplDat$OverTime <- sapply(emplDat$OverTime,factor)
+emplDat$Education <- as.factor(emplDat$Education)
+emplDat$EnvironmentSatisfaction <- as.factor(emplDat$EnvironmentSatisfaction)
+emplDat$JobInvolvement <- as.factor(emplDat$JobInvolvement)
+emplDat$JobLevel <- as.factor(emplDat$JobLevel)
+emplDat$JobSatisfaction <- as.factor(emplDat$JobSatisfaction)
+emplDat$PerformanceRating <- as.factor(emplDat$PerformanceRating)
+emplDat$RelationshipSatisfaction <- as.factor(emplDat$RelationshipSatisfaction)
+emplDat$StockOptionLevel <- as.factor(emplDat$StockOptionLevel)
+emplDat$TrainingTimesLastYear <- as.factor(emplDat$TrainingTimesLastYear)
+emplDat$WorkLifeBalance <- as.factor(emplDat$WorkLifeBalance)
+
+# create a salary column by multiplying 12x the monthly income variable
+emplDat$Salary <- emplDat$MonthlyIncome*12
+# summary(emplDat$Salary)
+```
+
+```{r}
+# Exploratory Data Analysis
+# Let us perform some exploratory data analysis to understand how the employee attributes are related to attrition. This will push understanding so we know how to model the data # later
+
+# Age vs Attrition
+ggplot(emplDat,aes(Age)) + geom_histogram(aes(fill=Attrition),color='black',binwidth=1) + theme_bw()
+
+# Age vs Salary
+ggplot(emplDat,aes(Age)) + geom_histogram(aes(fill=Salary),color='black',binwidth=1) + theme_bw()
+
+ggplot(data = melt(emplDat[]), mapping = aes(x = value)) + 
+  geom_histogram(bins = 10) + facet_wrap(~variable, scales = "free_x")
+
+ggplot(data = emplDat) +
+geom_bar(mapping = aes(x = Attrition))
+ggplot(data = emplDat) +
+geom_bar(mapping = aes(x = BusinessTravel))
+ggplot(data = emplDat) +
+geom_bar(mapping = aes(x = Department))
+ggplot(data = emplDat) +
+geom_bar(mapping = aes(x = EducationField))
+ggplot(data = emplDat) +
+geom_bar(mapping = aes(x = Gender))
+ggplot(data = emplDat) +
+geom_bar(mapping = aes(x = JobRole))
+ggplot(data = emplDat) +
+geom_bar(mapping = aes(x = MaritalStatus))
+ggplot(data = emplDat) +
+geom_bar(mapping = aes(x = OverTime))
+
+# The salary distribution is following a commonly known right skewed distribution called the Pareto distribution. It would be ideal to log this so it fits the assumption for linear regression
+ggplot(data = emplDat) +
+geom_histogram(mapping = aes(x = Salary))
+
+# We elect to remove the 'Over18' variable as it does not add any information to the dataset; removing EmployeeCount as well since it is just the value 1 for everything
+emplDat<-subset(emplDat, select=-c(Over18))
+emplDat<-subset(emplDat, select=-c((EmployeeCount)))
+
+# Correlations/covariances among numeric variables in
+# data frame mtcars. Use listwise deletion of missing data.
+# emplDatNum<- unlist(lapply(emplDat, is.numeric))
+# DatNum<-emplDat[ , emplDatNum]
+# cor(DatNum, use="complete.obs", method="kendall")
+# cov(DatNum, use="complete.obs")
+```
+
+```{r}
+
+emplDat %>%
+  ggplot(aes(group=Gender, y = Salary)) +
+  geom_boxplot(aes(color = Gender)) + #smokers associated with ~$30,000 higher mean charge amount
+  ggtitle("Salary vs Education")
+
+# more education higher mean salary in general
+emplDat %>%
+  ggplot(aes(group=Education, y = Salary)) +
+  geom_boxplot(aes(color = Education)) + #smokers associated with ~$30,000 higher mean charge amount
+  ggtitle("Salary vs Education")
+
+# might be interesting; Managers tend to make more than other roles and tend to be older
+emplDat %>%
+  ggplot(aes(x=Age, y = Salary)) + 
+  geom_point(aes(color = JobRole)) + #upward trend with age; appears to be many different groups of data; 
+  ggtitle("Salary vs Age")
+
+ggplot(emplDat, aes(x = YearsAtCompany, y = Salary)) +
+    geom_point()+
+    stat_smooth()+
+    theme_classic()
 
 ```
 
 ```{r}
-#
+# Multiple Linear Regression
+set.seed(134)  
+sampleSize <- floor(.75*nrow(emplDat))
+trainIndexes <- sample(seq_len(nrow(emplDat)), sampleSize, replace = FALSE) 
+train <- emplDat[trainIndexes, ]
+test <- emplDat[-trainIndexes, ]
+
+# Variables not considered for linear regression
+# -Attrition -BusinessTravel -Department -EducationField -Gender -JobRole #-MaritalStatus -OverTime -ID -EmployeeCount -StandardHours
+# DailyRate+ DistanceFromHome
+
+par(mfrow = c(2,2))
+# to stay parsimonius I stick to adding in variables rather than subracting
+lm.fit.m1 <- lm(Salary ~ JobLevel+ TotalWorkingYears+ YearsWithCurrManager+ JobRole+YearsSinceLastPromotion+ NumCompaniesWorked, data = train)
+summary(lm.fit.m1)
+plot(lm.fit.m1)
+
+# Mean squared error
+mse <- mean(residuals(lm.fit.m1)^2)
+mse
+# Root mean squared error
+rmse <- sqrt(mse)
+rmse
 
 ```
 
-```{r}
-#
 
+```{r}
+# predicted model fleshed out
+test$predicted <- predict(lm.fit.m1, newdata = test)
+test %>%
+  ggplot() +
+  geom_point(aes(x = predicted, y = Salary)) +
+  geom_abline(color = "red") +
+  ggtitle("Prediction vs. Real Values")
+
+# residuals
+#calculating residuals 
+test$residuals <- test$Salary - test$predicted
+
+#plot residuals 
+test %>%
+  ggplot() +
+  geom_pointrange(aes(x=predicted, y=residuals, ymin = 0, ymax = residuals)) +
+  geom_hline(yintercept = 0) +
+ggtitle("Residuals vs. Fitted Values")
+```
+
+
+```{r}
+# Logistic, Decision Tree and Random Forest models with confusion matrices
+# split data and run analysis models
+sample <- sample.split(emplDat$Attrition, SplitRatio = 0.75) # SplitRatio = percent of sample==TRUE
+
+# Training Data
+train = subset(emplDat, sample == TRUE)
+
+# Testing Data 
+test  = subset(emplDat, sample == FALSE) #for logistics model
+test2 = test # for decision tree
+test3 = test # for random tree
+
+# Apply logistic model; 'attr' being short for attrition
+glm_model = glm(Attrition ~ ., family = binomial(logit), data = train)
+test$predicted.attr = predict(glm_model, newdata=test, type="response")
+set.seed(2)
+test$status_attr <- ifelse(test$predicted.attr > 0.2, "Yes","No")
+glm_con <-confusionMatrix(factor(test$status_attr),test$Attrition)
+glm_con
+
+# ROC Curve
+suppressWarnings(library(caTools))
+colAUC(test$predicted.attr,test$Attrition, plotROC = TRUE)
+
+library(rpart.plot)
+suppressWarnings(library(rpart))
+suppressWarnings(library(ROCR))
+
+# Apply decision tree model
+names(train) <- make.names(names(train))
+names(test2) <- make.names(names(test2))
+tree_model <- rpart(Attrition ~ ., train, method = "class")
+
+all_probs <- predict(tree_model, test2, type = "prob")
+
+test2$status_attr <- ifelse(all_probs[,1]>0.90,"No","Yes")
+dt_con <- confusionMatrix(factor(test2$status_attr),test2$Attrition)
+dt_con 
+
+# Apply random forest
+suppressWarnings(library(randomForest))
+
+names(train) <- make.names(names(train))
+names(test3) <- make.names(names(test3))
+set.seed(1)
+rfFit<- randomForest(Attrition~.,data= train)
+
+print(rfFit)
+
+rf_pred <- predict(rfFit,test3,type = "class")
+rf_con<- confusionMatrix(rf_pred, test3$Attrition)
+rf_con
+
+glmAcu <- glm_con$overall[1]
+dtAcu<- dt_con$overall[1]
+rfAcu<- rf_con$overall[1]
+
+ACU <- data.frame(Model=c("Decision Tree","Logistic Regression","Random Forest"),Accuracy=c(dtAcu,glmAcu,rfAcu))
+ggplot(ACU,aes(x=Model,y=Accuracy,fill=Model))+geom_bar(stat = 'identity')+theme_bw()+ggtitle('Accuracies of Models')
+
+###############################
+# Decision Tree Model
+dmodel = rpart(Attrition ~ ., data=train, method="class")
+#Plot the model
+prp(dmodel)
+
+#Predict on the test data
+prediction <- predict(dmodel, newdata=test, type="class")
+table(test$Attrition)
+# base acc
+182/nrow(test)
+
+# Base Accuracy - Just predicting No for attrition for every observation will result in an accuracy of 84%.
+# Model Accuracy - The model has an accuracy of 87.6%, a slight 1% improvement.
+# 
+# Fully grown decision trees are prone to overfitting so it should be pruned to reduce that chance of overfit.
+
+#Confusion matrix 
+table(test$Attrition, prediction)
+#Decision tree model accuracy
+(175+9)/(nrow(test))
+
+printcp(dmodel)
+plotcp(dmodel)
+bestcp <- dmodel$cptable[which.min(dmodel$cptable[,"xerror"]),"CP"]
+pruned <-prune(dmodel, cp= bestcp)
+prp(pruned)
+printcp(pruned)
+plotcp(pruned)
+
+#Predict on the test data
+prediction_pm <- predict(pruned, newdata=test, type="class")
+table(test$Attrition, prediction_pm)
+# check accuracy; not much of an improvement
+(175+9)/nrow(test)
 ```
 
 ```{r}
-#
+#create objects x which holds the predictor variables and y which holds the response variables
+#x = emplDat[,-35]
+#y = emplDat$Salary
 
-```
-
-```{r}
-#
-
+# Naive Bayes Model; this model takes half a minute or so to run so run when ready
+# could not get NB or kNN to work for regression to find salary so I will stick with the linear model
+# model = train(x,y,'nb',trControl=trainControl(method='cv',number=10))
 ```
 
 
