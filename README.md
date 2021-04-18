@@ -16,12 +16,12 @@ The CaseStudy2 dataset provdided by DDSAnalytics contain information about 870 e
 Kebur Fantahun's YouTube Presentation: https://youtu.be/50EopOELm6w
 
 ## Folder & File Information
-- `/Data` contains the summary of the Case Study 2 analysis and data
+- `/Data` contains the summary of the Case Study 2 data
 - `/Html` contains the knit Html Report for the Analysis
 - `/Prediction` contains the csv file that has predictions for Attrition; CaseStudy2Predictions_Fantahun_Attrition.csv
 - `/Presentation` contains the powerpoint slide deck
 - `/Regression` contains the csv file that has the regression for Salary; CaseStudy2Regression_Fantahun_Salary.csv
-- `/src` contains our R-Markdown (RMD) source code
+- `/src` contains the R-Markdown (RMD) source code
 
 ## Instructions to the run the code locally
 1. Clone this repository to the directory of choice
