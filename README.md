@@ -16,6 +16,7 @@ The CaseStudy2 dataset provdided by DDSAnalytics contain information about 870 e
 Kebur Fantahun's YouTube Presentation: https://youtu.be/aJzSfHmRfDY
 
 ## Folder & File Information
+- `/main` contains all the folders and the Rproject(CaseStudy2DDS_KeburF.Rproj) file that houses the analysis
 - `/Data` contains the summary of the Case Study 2 data
 - `/Html` contains the knit Html Report for the Analysis
 - `/Prediction` contains the csv file that has predictions for Attrition; CaseStudy2Predictions_Fantahun_Attrition.csv
