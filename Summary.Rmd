@@ -57,7 +57,8 @@ library(knitr)
 
 ```{r}
 # Loading our data
-emplDat <- read_csv("CaseStudy2-data.csv")
+emplDat_url="https://raw.githubusercontent.com/KeburFantahun/CaseStudy2DDS_KeburF/main/CaseStudy2-data.csv"
+emplDat <-read_csv(url(emplDat_url))
 ```
 
 ```{r}

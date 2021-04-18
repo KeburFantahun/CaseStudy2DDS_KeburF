@@ -280,7 +280,8 @@ library(ggplot2)
 library(lattice)
 library(knitr)</code></pre>
 <pre class="r"><code># Loading our data
-emplDat &lt;- read_csv(&quot;CaseStudy2-data.csv&quot;)</code></pre>
+emplDat_url=&quot;https://raw.githubusercontent.com/KeburFantahun/CaseStudy2DDS_KeburF/main/CaseStudy2-data.csv&quot;
+emplDat &lt;-read_csv(url(emplDat_url))</code></pre>
 <pre><code>## 
 ## -- Column specification --------------------------------------------------------
 ## cols(
