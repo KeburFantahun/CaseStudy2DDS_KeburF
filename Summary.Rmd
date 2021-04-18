@@ -57,7 +57,7 @@ library(knitr)
 
 ```{r}
 # Loading our data
-emplDat_url="https://raw.githubusercontent.com/KeburFantahun/CaseStudy2DDS_KeburF/main/CaseStudy2-data.csv"
+emplDat_url="https://raw.githubusercontent.com/KeburFantahun/CaseStudy2DDS_KeburF/main/Data/CaseStudy2-data.csv"
 emplDat <-read_csv(url(emplDat_url))
 ```
 
@@ -476,7 +476,8 @@ ggtitle("Residuals vs. Fitted Values")
 
 ```{r}
 # Predict Salary
-salaryPred <- read_csv("salary_valid.csv")
+salPred_url="https://raw.githubusercontent.com/KeburFantahun/CaseStudy2DDS_KeburF/main/Data/salary_valid.csv"
+salaryPred <-read_csv(url(salPred_url))
 
 salaryPred$Attrition <- sapply(salaryPred$Attrition,factor)
 salaryPred$BusinessTravel <- sapply(salaryPred$BusinessTravel,factor)
@@ -502,7 +503,8 @@ dim(salaryPred$predictedSal)
 str(salaryPred$predictedSal)
 salaryPredDF <- as.data.frame(salaryPred$predictedSal/12)
 names(salaryPredDF)
-write.csv(salaryPredDF,"C:\\Users/fkebu/Documents/GitHub/CaseStudy2DDS_KeburF/Case2Predictions_Fantahun_Salary.csv", row.names = TRUE)
+# write.csv(salaryPredDF,"C:\\Users/fkebu/Documents/GitHub/CaseStudy2DDS_KeburF/Case2Predictions_Fantahun_Salary.csv", row.names = TRUE)
+write.csv(salaryPredDF,"C:\\Users/Home account/Desktop/Case2Predictions_Fantahun_Salary.csv", row.names = TRUE)
 
 ```
 
@@ -607,7 +609,8 @@ table(test$Attrition, prediction_pm)
 
 ```{r}
 # Predict Attrition
-attrPred <- read_csv("attrition_valid.csv")
+attrPred_url="https://raw.githubusercontent.com/KeburFantahun/CaseStudy2DDS_KeburF/main/Data/attrition_valid.csv"
+attrPred <-read_csv(url(attrPred_url))
 attrPred$Salary <- attrPred$MonthlyIncome*12
 
 attrPred$BusinessTravel <- sapply(attrPred$BusinessTravel,factor)
@@ -635,7 +638,8 @@ dim(attrPred$status_attr)
 str(attrPred$status_attr)
 attrPredDF <- as.data.frame(attrPred$status_attr)
 names(attrPredDF)
-write.csv(attrPredDF,"C:\\Users/fkebu/Documents/GitHub/CaseStudy2DDS_KeburF/Case2Predictions_Fantahun_Attrition.csv", row.names = TRUE)
+# write.csv(attrPredDF,"C:\\Users/fkebu/Documents/GitHub/CaseStudy2DDS_KeburF/Case2Predictions_Fantahun_Attrition.csv", row.names = TRUE)
+write.csv(attrPredDF,"C:\\Users/Home account/Desktop/Case2Predictions_Fantahun_Attrition.csv", row.names = TRUE)
 
 ```
 
