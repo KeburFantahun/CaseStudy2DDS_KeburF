@@ -2,7 +2,7 @@
 * Kebur Fantahun
 
 ## Introduction 
-Normally in a steady economy, it is expected that some employee turnover will happen. Many factors can influence a person's choice to consider other career paths such as family, a different compensation, or simply a different job environment. Although some turnover is expected, if actions can be taken to understand it before it happens then a greater understanding of attrition could help to prevent a loss of employees. 
+In a steady economy, it is expected that businesses undergo attrition. Many factors can influence a person's choice to consider other career paths such as family, a different compensation, or simply a different job environment. Although some turnover is expected, if actions can be taken to understand why employees leave before they do then businesses may be able to dampen or halt attrition completely. 
 
 This report will illustrate which employee attributes lead to attrition. The report also provides summary statistics such as minimums, medians and maximums. The researcher divulges information that DDSAnalytics can leverage to ensure high rates of attrition for themselves and for Fortune 100 companies.
 
